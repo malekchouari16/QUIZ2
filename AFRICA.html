@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <body>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Protest+Strike&display=swap" rel="stylesheet">
+        
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lilita+One&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+            <link rel="preconnect" href="https://fonts.googleapis.com">
+            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+            <link href="https://fonts.googleapis.com/css2?family=Anta&family=Lilita+One&family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+
+            <link rel= "stylesheet" href = "africa.css" >
+            <title>AFRICA</title>
+            <h1>GUESS THE FLAG!</h1>
+            <p>Are you smart enough to get a full score ?</p>
+        <body>
+            <div class="container">
+                <div id="question-container" class="hide">
+                 <div id="question">Which country does this flag represent?</div>
+                 <div id="asnwer-buttons" class="btn-grid">
+                    <button class="btn">Answer 1</button>
+                    <button class="btn">Answer 2</button>
+                    <button class="btn">Answer 3</button>
+                    <button class="btn">Answer 4</button>
+                 </div>
+                </div>
+                <div class="controls">
+                    <button id="next-btn" class="next-btn btn hide">Next </button>
+                </div>
+            </div>
+        </body>
+    </body>
+    </head>
+    <script>
+                  
+let currentSlide = 0;
+const slides = document.querySelectorAll('.slide');
+
+
+function showSlide(index) {
+    slides.forEach((slide, i) => {
+        slide.style.display = i === index ? 'block' : 'none';
+    });
+}
+
+
+function nextSlide() {
+    currentSlide = (currentSlide + 1) % slides.length;
+    showSlide(currentSlide);
+}
+
+
+function prevSlide() {
+    currentSlide = (currentSlide - 1 + slides.length) % slides.length;
+    showSlide(currentSlide);
+}
+
+
+showSlide(currentSlide);
+
+
+const questions = [
+    {
+        question: 'What is the primary habitat of capybaras?',
+        answers: [ 'Rainforests', 'Grasslands', ' Deserts', 'Tundra'],
+        correctAnswer: 1,
+    },
+    {
+        question: 'What is the main diet of capybaras?',
+        answers: ['Carnivorous', 'Herbivorous', ' Omnivorous', 'Insectivorous'],
+        correctAnswer: 1,
+    },
+    {
+        question: 'Which of the following statements about capybara behavior is true?',
+        answers: ['They are solitary animals', 'They are nocturnal creatures', 'They are excellent climbers', 'They are exellent swimmers'],
+        correctAnswer: 3,
+    },
+    {
+        question: 'How do capybaras primarily defend themselves from predators?',
+        answers: ['Speed and agility', 'Camouflage', 'Strong sense of smell', 'Vocal warnings'],
+        correctAnswer: 3,
+    },
+    {
+        question: 'Approximately how much can a fully grown capybara weigh?',
+        answers: ['20-30 pounds (9-14 kg)', '50-60 pounds (23-27 kg)', '80-100 pounds (36-45 kg)', ' 110-130 pounds (50-59 kg)'],
+        correctAnswer: 2,
+    },
+    {
+        question: 'Which of the following is a unique adaptation of capybaras for their semi-aquatic lifestyle?',
+        answers: ['Webbed feet', 'Sharp claws', 'Heat-seeking vision', ' Ability to hold breath for hours',],
+        correctAnswer: 0,
+    },
+];
+
+
+const displayedQuestions = []; // Create a new array to keep track of displayed questions
+let score = 0; // Initialize the score variable
+
+
+function getRandomQuestion() {
+    const randomIndex = Math.floor(Math.random() * questions.length);
+    if (displayedQuestions.includes(randomIndex)) {
+        // If the random index is already in the `displayedQuestions` array,
+        // recursively call the function until a new question is found
+        return getRandomQuestion();
+    }
+    displayedQuestions.push(randomIndex);
+    return questions[randomIndex];
+}
+
+
+function displayQuestion(question) {
+    document.getElementById('question').textContent = question.question;
+    const answerButtons = document.getElementById('answer-buttons');
+    answerButtons.innerHTML = '';
+    question.answers.forEach((answer, index) => {
+        const button = document.createElement('button');
+        button.classList.add('btn');
+        button.textContent = answer;
+        button.addEventListener('click', () => {
+            if (index === question.correctAnswer) {
+                button.style.backgroundColor = 'green';
+                score++; // Increment score if the answer is correct
+            } else {
+                button.style.backgroundColor = 'red';
+            }
+
+
+            // Disable the answer buttons after a user selects an answer
+            question.answers.forEach((answer, index) => {
+                const btn = document.querySelector(`#answer-buttons button:nth-child(${index + 1})`);
+                btn.disabled = true;
+            });
+
+
+            // Show the "Next" button
+            const nextButton = document.createElement('button');
+            nextButton.classList.add('btn', 'next-btn');
+            nextButton.textContent = 'Next';
+            nextButton.addEventListener('click', () => {
+                // Remove the "Next" button
+                nextButton.remove();
+
+
+                // Enable the answer buttons
+                question.answers.forEach((answer, index) => {
+                    const btn = document.querySelector(`#answer-buttons button:nth-child(${index + 1})`);
+                    btn.disabled = false;
+                    // Reset the background color of the answer buttons
+                    btn.style.backgroundColor = '';
+                });
+
+
+                // Move to the next question
+                if (displayedQuestions.length === questions.length) {
+                    // Display a message to indicate that the quiz is over
+                    const congratsMessage = document.createElement('div');
+                    congratsMessage.classList.add('congrats-message');
+                    congratsMessage.textContent = `Congratulations! You finished the quiz. Your score is ${score}/${questions.length}`;
+                    document.body.appendChild(congratsMessage);
+                } else {
+                    // Display the next question
+                    const newQuestion = getRandomQuestion();
+                    displayQuestion(newQuestion);
+                }
+            });
+
+
+            answerButtons.appendChild(nextButton);
+        });
+
+
+        answerButtons.appendChild(button);
+    });
+}
+
+
+function startQuiz() {
+    displayedQuestions.length = 0; // Reset the `displayedQuestions` array
+    score = 0; // Reset the score
+    const question = getRandomQuestion();
+    displayQuestion(question);
+}
+
+
+startQuiz();
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sections = document.querySelectorAll('.section');
+
+
+    sections.forEach(section => {
+        const title = section.querySelector('h2');
+
+
+        title.addEventListener('click', function() {
+            section.classList.toggle('expanded');
+        });
+    });
+});
+
+    </script>
+</html>
